@@ -1,0 +1,50 @@
+{% extends "account/peopleList.html" %}
+{% block Title %}List friend requests{% endblock %}
+{% block H %}
+    <h1><a href="../../">People</a>
+        <a href="../../friend/">Friend list</a>
+        <a style="margin-right: 0">Friend requests:</a>
+        {% if request_type == "to" %}
+            <a href="" style="margin: 0" class="active">To me</a> |
+            <a href="../out/" style="margin: 0">From me</a>
+        {% else %}
+            <a href="../in/" style="margin: 0">To me</a> |
+            <a href="" style="margin: 0" class="active">From me</a>
+        {% endif %}
+    </h1>
+{% endblock %}
+{% block Object %}
+{% for friend_request in object_list %}
+    <li class="obj">
+        <span class="left">
+            {% if request_type == "from" %}
+            <img src="/media/{{ friend_request.to_user.profile.image }}" alt="">
+        </span>
+        <span class="right">
+            <a class="name" href="../../{{ friend_request.to_user.profile.id }}">{{ friend_request.to_user.profile.username }}</a>
+            <span class="desc">{{ friend_request.to_user.profile.about }}</span>
+            <form action="{{ friend_request.id }}/cancel/" method="post">
+                {% csrf_token %}
+                <button class="cancel" title="Cancel request">⨉</button>
+            </form>
+            {% else %}
+            <img src="/media/{{ friend_request.from_user.profile.image }}" alt="">
+        </span>
+        <span class="right">
+            <a class="name" href="../../{{ friend_request.from_user.profile.id }}">{{ friend_request.from_user.profile.username }}</a>
+            <span class="desc">{{ friend_request.from_user.profile.about }}</span>
+            <form action="{{ friend_request.id }}/accept/" method="post">
+                {% csrf_token %}
+                <button class="accept" title="Accept request">✓</button>
+            </form>
+            <form action="{{ friend_request.id }}/reject/" method="post">
+                {% csrf_token %}
+                <button class="remove" title="Reject request">⨉</button>
+            </form>
+            {% endif %}
+        </span>
+    </li>
+{% empty %}
+    <li class="obj" id="nothing">No friends yet.</li>
+{% endfor %}
+{% endblock %}

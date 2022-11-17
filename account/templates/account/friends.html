@@ -1,0 +1,29 @@
+{% extends "account/peopleList.html" %}
+{% block Title %}List friends{% endblock %}
+{% block H %}
+    <h1><a href="../">People</a>
+        <a href="" class="active">Friend list</a>
+        <a style="margin-right: 0">Friend requests:</a>
+        <a href="../friend.request/in/" style="margin: 0">To me</a> |
+        <a href="../friend.request/out/" style="margin: 0">From me</a>
+    </h1>
+{% endblock %}
+{% block Object %}
+{% for friend in object_list %}
+    <li class="obj">
+        <span class="left">
+            <img src="/media/{{ friend.to_user.profile.image }}" alt="">
+        </span>
+        <span class="right">
+            <a class="name" href="../{{ friend.to_user.profile.id }}">{{ friend.to_user.profile.username }}</a>
+            <span class="desc">{{ friend.to_user.profile.about }}</span>
+            <form action="{{ friend.id }}/delete/" method="post">
+                {% csrf_token %}
+                <button title="Remove friend">✖</button>
+            </form>
+        </span>
+    </li>
+{% empty %}
+    <li class="obj" id="nothing">No friends yet.</li>
+{% endfor %}
+{% endblock %}

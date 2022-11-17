@@ -1,0 +1,9 @@
+asgiref==3.5.2
+django-hashedfilenamestorage==2.4.1
+Django==4.0.4
+Pillow==9.1.1
+pip==22.1
+setuptools==62.3.2
+sqlparse==0.4.2
+tzdata==2022.1
+wheel==0.37.1

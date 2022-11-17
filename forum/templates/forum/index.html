@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block Title %}News{% endblock %}
+{% block Head %}
+    <style>
+        .article {
+            padding: 2rem;
+            background: #fff;
+            border-radius: 0.5rem;
+            margin: 0 auto 1rem;
+            display: block;
+        }
+        .topArticle, .bottomArticle {
+            display: flex;
+            align-items: center;
+            color: black;
+        }
+        .topArticle img {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 5rem;
+        }
+        .topArticle span {
+            margin-left: 1rem;
+            font-size: 1.5rem;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            display: inline-block;
+        }
+        .mainArticle {
+            min-height: 10rem;
+            padding-top: 1.5rem;
+        }
+        .mainArticle a {
+            font-weight: bold;
+            font-size: 2rem;
+            height: 3rem;
+        }
+        .bottomArticle {
+            justify-content: space-between;
+        }
+        .bottomArticle a {
+            font-size: 1.5rem;
+            padding: 0 2rem;
+        }
+
+        .article #nothing {
+            font-size: 2rem;
+            width: 100%;
+            display: inline-block;
+            text-align: center;
+        }
+        a.article {
+            width: fit-content;
+        }
+        .outButton {
+            padding: 0;
+            border: none;
+            margin: 2rem auto;
+            display: block;
+            width: fit-content;
+        }
+        .outButton a {
+            padding: 1rem .5rem;
+            background: #fff;
+            border-radius: .5rem;
+            margin: 0 .5rem;
+            display: inline-block;
+            width: 40px;
+            text-align: center;
+        }
+        .pagination {
+            display: block;
+            font-size: 2rem;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
+{% block Content %}
+    <main>
+    {% if user.is_active %}
+        <a class="article" href="new/">Created new article</a>
+    {% endif %}
+    {% if isEmpty %}
+        <div class="article col-md-6 col-12">
+            <span id="nothing">No articles found</span>
+        </div>
+    {% else %}
+        {% for article in object_list %}
+        <div class="article col-md-6 col-12">
+            <a class="topArticle" href="/account/{{ article.author.id }}">
+                <img src="/media/{{ article.author.profile.image }}" alt="">
+                <span>{{ article.author.profile.username }}</span>
+            </a>
+            <div class="mainArticle">
+                <a href="/article/{{ article.id }}">{{ article.title }}</a>
+            </div>
+            <div class="bottomArticle">
+                <a href="/article/{{ article.id }}#comments">Add comment</a>
+                <span class="dateCreated">{{ article.created_at }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
+    </main>
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a data-page="1" class="pageSteps">First</a>
+                <a data-page="{{ page_obj.previous_page_number }}" class="pageSteps">Previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a data-page="{{ page_obj.next_page_number }}" class="pageSteps">Next</a>
+                <a data-page="{{ page_obj.paginator.num_pages }}" class="pageSteps">Last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+
+{% endblock %}

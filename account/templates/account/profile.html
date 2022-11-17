@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% block Title %}Profile{% endblock %}
+{% block Head %}
+    <style>
+        main {
+            padding: 2rem;
+            background: #fff;
+            border-radius: 0.5rem;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: flex-start !important;
+        }
+        .left {
+            width: 30rem;
+            text-align: center;
+            display: inline-block;
+        }
+        .left img {
+            width: 100%;
+            height: 30rem;
+        }
+        .left a {
+            display: block;
+            margin-top: 1rem;
+            font-size: 1.5rem;
+        }
+        .right {
+            padding-left: 2rem;
+            display: inline-block;
+        }
+        .right span {
+            font-size: 1.5rem;
+            color: #C4C4C4;
+        }
+        .right p {
+            font-size: 1.5rem;
+        }
+        .article {
+            padding: 2rem;
+            background: #fff;
+            border-radius: 0.5rem;
+            margin: 0 auto 1rem;
+            display: block;
+        }
+        .topArticle, .bottomArticle {
+            display: flex;
+            align-items: center;
+            color: black;
+        }
+        .topArticle img {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 5rem;
+        }
+        .topArticle span {
+            margin-left: 1rem;
+            font-size: 1.5rem;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            display: inline-block;
+        }
+        .mainArticle {
+            min-height: 10rem;
+            padding-top: 1.5rem;
+        }
+        .mainArticle a {
+            font-weight: bold;
+            font-size: 2rem;
+            height: 3rem;
+        }
+        .bottomArticle {
+            justify-content: space-between;
+        }
+        .bottomArticle a {
+            font-size: 1.5rem;
+            padding: 0 2rem;
+        }
+
+        .article #nothing {
+            font-size: 2rem;
+            width: 100%;
+            display: inline-block;
+            text-align: center;
+        }
+        a.article {
+            width: fit-content;
+        }
+        .outButton {
+            padding: 0;
+            border: none;
+            margin: 2rem auto;
+            display: block;
+            width: fit-content;
+        }
+        .outButton a {
+            padding: 1rem .5rem;
+            background: #fff;
+            border-radius: .5rem;
+            margin: 0 .5rem;
+            display: inline-block;
+            width: 40px;
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+{% block Content %}
+    <main class="col-md-10 col-12 align-items-start">
+        <div class="left">
+            <img src="/media/{{ owner.image }}" alt="Profile photo">
+            {% if is_owner %}
+                <a href="../settings/">Change profile</a>
+                <a href="../friend/">Friends</a>
+                <a href="../logout/">Logout</a>
+            {% elif friend %}
+                <form action="../friend/{{ friend.id }}/delete/" method="post">
+                {% csrf_token %}
+                <button>Remove friend</button>
+            </form>
+            {% elif sent_friend_request %}
+                <form action="../friend.request/{{ sent_friend_request.id }}/cancel/" method="post">
+                {% csrf_token %}
+                <button class="cancel">Cancel friend request</button>
+                </form>
+            {% elif have_friend_request %}
+                <a href="">Accept friend request</a>
+                <form action="../friend.request/{{ have_friend_request.id }}/accept/" method="post">
+                {% csrf_token %}
+                <button class="accept">Accept friend request</button>
+            </form>
+            <form action="../friend.request/{{ have_friend_request.id }}/reject/" method="post">
+                {% csrf_token %}
+                <button class="remove">Reject friend request</button>
+            </form>
+            {% else %}
+            <form action="../friend.request/" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="{{ fr_form.to_user.name }}" value="{{ owner.id }}">
+                <button>Sent friend request</button>
+            </form>
+            {% endif %}
+        </div>
+        <div class="right">
+            <h1>{{ owner.username }}</h1>
+            <span>About me:</span>
+            <p>{{ owner.about }}</p>
+            <span>🪙{{ owner.balance }}</span>
+        </div>
+    </main>
+    {% for article in articles %}
+        <div class="article col-md-6 col-12">
+            <a class="topArticle" href="/account/{{ article.author.id }}">
+                <img src="/media/{{ article.author.profile.image }}" alt="">
+                <span>{{ article.author.profile.username }}</span>
+            </a>
+            <div class="mainArticle">
+                <a href="/article/{{ article.id }}">{{ article.title }}</a>
+            </div>
+            <div class="bottomArticle">
+                <a href="/article/{{ article.id }}#comments">Add comment</a>
+                <span class="dateCreated">{{ article.date_created }}</span>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

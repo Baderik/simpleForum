@@ -1,0 +1,24 @@
+{% extends "account/peopleList.html" %}
+{% block H %}
+    <h1><a href="" class="active">People</a>
+        <a href="friend/">Friend list</a>
+        <a style="margin-right: 0">Friend requests:</a>
+        <a href="friend.request/in/" style="margin: 0">To me</a> |
+        <a href="friend.request/out/" style="margin: 0">From me</a>
+    </h1>
+{% endblock %}
+{% block Object %}
+    {% for profile in object_list %}
+        <li class="obj">
+        <span class="left">
+                    <img src="/media/{{ profile.image }}" alt="">
+                </span>
+                <span class="right">
+                    <a class="name" href="{{ profile.id }}">{{ profile.username }}</a>
+                    <span class="desc">{{ profile.about }}</span>
+                </span>
+        </li>
+    {% empty %}
+        <li class="obj" id="nothing">No people yet.</li>
+    {% endfor %}
+{% endblock %}
